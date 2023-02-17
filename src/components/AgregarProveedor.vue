@@ -39,6 +39,7 @@
                 label="Municipio"
                 
                 ></v-select>
+                
             </v-col>
         </v-row>
         <v-row>
@@ -64,13 +65,14 @@ data(){
             items:[],
             selectItem:'',
             municipios:[],
-            arragloRespaldo:[]
+            arragloRespaldo:[],
+            
     }
 },
 
 methods:{
 
-    async guardarProveedor(){
+     guardarProveedor(){
 
         const token = localStorage.getItem('token')
         
@@ -92,7 +94,7 @@ methods:{
             id_departamento_prov: 1
        } 
         
-       await fetch("https://localhost:7028/api/proveedor",{
+        fetch("https://localhost:7028/api/proveedor",{
             method:'POST',
             headers: {'Authorization':`Bearer ${token}`,
                       'Content-Type':'application/json'
@@ -105,15 +107,16 @@ methods:{
 
     },
 
-    async cargarDataSelect1(){
-
+    cargarDataSelect1(){
+           // this.selected = event;
             const token = localStorage.getItem('token')
             let array = [];
+            
 
             
        if(this.items.length <= 0){
 
-              fetch("https://localhost:7028/api/Departamento",{
+         fetch("https://localhost:7028/api/Departamento",{
             method:'GET',
             headers:{
             'Authorization':`bearer ${token}`,
@@ -121,14 +124,32 @@ methods:{
         })
         .then(resp => resp.json())
         .then(response =>{
-            array = response;
-            this.arragloRespaldo = array;
 
+            
+
+                array =  response;
+
+            //console.log(err.response);
+
+               this.arragloRespaldo = array;
+
+            //console.log(this.arragloRespaldo);
+            
                 for(let i = 0; i <= array.length; i++){
-                    this.items.push( array[i].nombre_departamento);
-                }
+                    
+                    this.items.push( array[i]?.nombre_departamento);
+                     
+            }
+
+            
+            
+            
+            
         })
        }
+
+          
+
       
     }
 
@@ -142,9 +163,11 @@ watch:{
 
         let busqueda = 0;
 
+        
+
         for(let i=0; i<= array2.length; i++){
             if(array2[i].nombre_departamento.includes(value)){
-                busqueda = array2[i].id_departamento;
+                busqueda = array2[i]?.id_departamento;
 
                 break;
             }
@@ -162,11 +185,15 @@ watch:{
         })
         .then(resp => resp.json())
         .then(response =>{
-            array = response;
+
+            
+                array = response;
 
             for(let i = 0 ; i <= array.length; i++){
-                this.municipios.push(array[i].nombre_municipio);
+                this.municipios.push(array[i]?.nombre_municipio);
             }
+            
+            
         })
     }
 }
